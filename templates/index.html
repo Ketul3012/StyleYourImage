@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo</title>
+  <style type="text/css">
+  	.input1
+  	{
+  		margin:10px;
+  	}
+
+  	.img1
+  	{	
+  		margin:10px;
+  	
+  	}
+  	
+  </style>
+  
+</head>
+
+<body>
+
+  <form action="/upload" method="post" enctype="multipart/form-data" >
+      <span class="btn btn-default btn-file">
+        Browse <input class="input1" type="file" name="image">
+      </span>
+    <input class="input1" type="submit" value="Upload your image" >
+    <br>
+
+    <img class="img1" src="\static\style1.png" height="300px" width="300px">
+    
+
+  </form>
+
+</body>
+</html>
