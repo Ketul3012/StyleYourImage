@@ -14,8 +14,10 @@ app.config["CACHE_TYPE"] = "null"
 
 f = ""
 
+#Add your uploaded image to templates folder
 UPLOAD_FOLDER = os.path.basename('templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route('/')
 def hello_world():
@@ -33,6 +35,7 @@ def upload_file():
 
 def main():
     global f
+    #change image size to 400-400
     def preprocess_image(image_path, height=None, width=None):
         height = 400 if not height else height
         width = width if width else int(width * height / height)
@@ -41,7 +44,7 @@ def main():
         img = np.expand_dims(img, axis=0)
         img = vgg19.preprocess_input(img)
         return img
-
+    
     def deprocess_image(x):
         # Remove zero-center by mean pixel
         x[:, :, 0] += 103.939
@@ -81,13 +84,17 @@ def main():
 
     layers = dict([(layer.name, layer.output) for layer in model.layers])
 
-
+    #There are Three Different types of losses in this context.
+    # 1. Content loss : which compare generated image with orginal image and compute loss
+    # 2. Style loss : Style loss is based on most popular gram matrix which compute loss for generated image with original style image.
+    # 3. Total loss : Content loss + Style loss
     def content_loss(base, combination):
         return K.sum(K.square(combination - base))
 
 
     def style_loss(style, combination, height, width):
-    
+        #gram matrix is a important matrix which posses weight of layers
+        #gram matrix is created by mutlipling weights matrix and it's transpose
         def build_gram_matrix(x):
             features = K.batch_flatten(K.permute_dimensions(x, (2, 0, 1)))
             gram_matrix = K.dot(features, K.transpose(features))
@@ -110,7 +117,10 @@ def main():
     content_weight = 0.025
     style_weight = 1.0
     total_variation_weight = 1e-4
-
+    
+    # Three different types of neural networks.
+    # gatys is a popular technique suggest by Leon A. gatys
+    
     def set_cnn_layers(source='gatys'):
         if source == 'gatys':
             content_layer = 'block5_conv2'
